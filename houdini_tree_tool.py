@@ -1,23 +1,22 @@
-from sqlite3 import connect
-
-
 def createCurve():
     obj = hou.node('/obj')
-    geo_node = createNode(obj, 'geo', 'curve_geo_node')
+    geo_node = Node(obj, 'geo', 'geo_node')
+    geo_node.createNode()
     
-    curve_node = createNode(geo_node, 'curve', 'new_curve')
+    curve_node = Curve(geo_node, 'curve', 'curve1', True, 3)
+    curve_node.createNode()
 
     # Set input from box node to be curve node
     # boxNode.setInput(0, curveNode, 0)
-    resample_node = createNode(geo_node, 'resample', 'resample_node')
+    # resample_node = createNode(geo_node, 'resample', 'resample_node')
 
-    connectNodes(curve_node, resample_node)
+    # connectNodes(curve_node, resample_node)
 
-    box_node = createNode(geo_node, 'box', 'box_node')
+    # box_node = createNode(geo_node, 'box', 'box_node')
     
-    copy_node = createNode(geo_node, 'copytopoints::2.0', 'copy_pts')
+    # copy_node = createNode(geo_node, 'copytopoints::2.0', 'copy_pts')
 
-    connectNodes(box_node, copy_node)
+    # connectNodes(box_node, copy_node)
     # Set display flag to true for curve node
     # curve_node.setDisplayFlag(True)
     # curveNode.setRenderFlag(1)
@@ -34,19 +33,53 @@ def createCurve():
     # parentLSystem(curve_node, tree_node)
     
 
-# class Node
-#   self.name = name
-#   self.input = input
-# This func would go in class Node
-def createNode(parent_node, node_type, name):
-    new_node = parent_node.createNode(node_type, name)
-    new_node.setDisplayFlag(True)
+class Node:
+    """
+    Node class for creating any kind of node in Houdini
 
-    return new_node
 
-# This func also goes in Node class
-def connectNodes(parent_node, child_node):
-    parent_node.setInput(0, child_node, 0)
+    """
+
+    def __init__(self, parent_node, node_type, name, display=True):
+        self.parent_node = parent_node
+        self.node_type = node_type
+        self.name = name
+        self.display = display
+        # self.inputs = inputs
+
+    def createNode(self):
+        new_node = self.parent_node.createNode(self.node_type, self.name)
+        new_node.setDisplayFlag(self.display)
+
+        return new_node
+    
+    def connectNodes(self, child_node):
+        self.parent_node.setInput(0, child_node, 0)
+
+class Curve(Node):
+    """
+    Curve class, subclassed from Node class to have node data and also custom Curve data 
+
+
+    """
+    
+    def __init_(self, parent_node, node_type, name, display, num_points):
+        self.num_points = num_points
+
+        super().__init__(self, parent_node, node_type, name, display)
+
+    def createNode(self):
+        new_node = self.parent_node.createNode(self.node_type, self.name)
+        new_node.setDisplayFlag(self.display)
+
+        # Set param 'Order' to user-determined num_points
+        new_node.parm('order').eval(self.num_points)
+
+        # Set curve to be NURBS curve for ease of use
+        new_node.parm('outputtype').eval('NURBS Curve')
+        
+        return new_node
+        
 
 def parentLSystem(parent_node, child_node):
     parent_node.setInput(0, child_node,0)     
