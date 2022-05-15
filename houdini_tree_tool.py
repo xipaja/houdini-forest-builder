@@ -9,6 +9,14 @@ def createCurve():
     # spread out network view - not have to manually drag the nodes around to see them all
 
     # TODO: make curve NURBS curve - parm edit
+    # When you build UI, have a slider or text input for number of trees you want to do
+    # ^ corresponds to 'length' parm of resample node
+    # UI - slider to adjust density of trees
+        # create grouprange node, connect it to chosen shape ('torus', 'curve', whatever user chooses)
+        # change Range Filter Select # of # (second parm - 'selecttotal1') based on UI slider
+        # In copytopoints node, change Target Points parm ('targetgroup') to be the name of group in 
+            # the grouprange node ('groupname1')
+            
     curve_obj = hou.node('/obj').createNode('geo', 'p_curve_objects')
     p_curve1 = curve_obj.createNode('curve', 'p_curve1')
     
@@ -68,16 +76,12 @@ class CurveNode(Node):
         new_node.setDisplayFlag(self.display)
 
         # Set param 'Order' to user-determined num_points
-        new_node.parm('order').eval(self.num_points)
+        new_node.parm('order').set(self.num_points)
 
         # Set curve to be NURBS curve for ease of use
-        new_node.parm('outputtype').eval('NURBS Curve')
+        new_node.parm('outputtype').set('NURBS Curve')
 
 
 def parentLSystem(parent_node, child_node):
     parent_node.setInput(0, child_node,0)     
-
-# TODO: create func to create L-System node - call it multiple times in the shell
-# 
-# When you build UI, have a slider or text input for number of trees you want to do
-# Loop through textInput from ^ and parent to curve node
+ 
