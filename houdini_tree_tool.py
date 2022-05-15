@@ -1,30 +1,32 @@
 import hou 
 
 def createCurve():
-    obj = hou.node('/obj')
-    # node_type=type(hou.SopNode)
-    geo_node = Node(parent_node=obj, node_type='geo', given_name='geo_node')
+    
+    # Optional TOOOs
+    # if not exist, create
+    # from.to architecture instead of Houdini's to.from (builder) for setInput 
+    # translation layer for (0, p_curve1, 0) - what are the 0 inputs? Add useful var names for user
+    # spread out network view - not have to manually drag the nodes around to see them all
+
+    # TODO: make curve NURBS curve - parm edit
+    curve_obj = hou.node('/obj').createNode('geo', 'p_curve_objects')
+    p_curve1 = curve_obj.createNode('curve', 'p_curve1')
+    
+    p_resample = curve_obj.createNode('resample', 'p_resample')
+    p_resample.setInput(0, p_curve1, 0)
+    
+    p_copy_to_points = curve_obj.createNode('copytopoints::2.0', 'p_copy_to_points')
+    p_copy_to_points.setInput(1, p_resample, 0)
+    
+    p_lsystem = curve_obj.createNode('lsystem', 'p_lsystem')
+    p_copy_to_points.setInput(0, p_lsystem, 0)
+    p_copy_to_points.setDisplayFlag(True)
+    
+    # geo_node = Node(parent_node=obj, node_type='geo', given_name='geo_node')
     # geo_node.createNode()
     
-    curve_node = CurveNode(geo_node, 'curve', 'curve1', 3)
+    # curve_node = CurveNode(geo_node, 'curve', 'curve1', 3)
     # curve_node.createNode()
-
-    # Set input from box node to be curve node
-    # boxNode.setInput(0, curveNode, 0)
-    # resample_node = createNode(geo_node, 'resample', 'resample_node')
-
-    # connectNodes(curve_node, resample_node)
-
-    # box_node = createNode(geo_node, 'box', 'box_node')
-    
-    # copy_node = createNode(geo_node, 'copytopoints::2.0', 'copy_pts')
-
-    # connectNodes(box_node, copy_node)
-    # Set display flag to true for curve node
-    # curve_node.setDisplayFlag(True)
-    # curveNode.setRenderFlag(1)
-    
-    # curve_node.setCurrent(True)
     
     # tree_node = geo_node.createNode('lsystem', 'tree')
     # tree_node.setDisplayFlag(1)
