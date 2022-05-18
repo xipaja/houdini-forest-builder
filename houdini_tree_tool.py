@@ -1,23 +1,33 @@
-from email.mime import base
-import hou 
-import json 
+import hou
+from PySide2 import QtCore, QtUiTools, QtWidgets
 
-json_path = "C:\Users\xipaj\Desktop\python_advanced_tool\python-advanced-tool"
+class ForestCreator(QtWidgets.QWidget):
+    def __init__(self):
+        super(ForestCreator,self).__init__()
+        ui_file = 'C:/hou_temp/uiForestCreator.ui'
+        self.ui = QtUiTools.QUiLoader().load(ui_file, parentWidget=self)
+        self.setParent(hou.ui.mainQtWindow(), QtCore.Qt.Window)
+        
+        # SIGNALS
+        # Setup button
+        self.ui.btn_create.clicked.connect(self.btnClicked)
+        
+    def btnClicked(self):
+        curve_obj = hou.node('/obj').createNode('geo', 'p_curve_objects')
+        p_curve1 = curve_obj.createNode('curve', 'p_curve1')
+    
+        p_resample = curve_obj.createNode('resample', 'p_resample')
+        p_resample.setInput(0, p_curve1, 0)
+    
+        p_copy_to_points = curve_obj.createNode('copytopoints::2.0', 'p_copy_to_points')
+        p_copy_to_points.setInput(1, p_resample, 0)
+    
+        p_lsystem = curve_obj.createNode('lsystem', 'p_lsystem')
+        p_copy_to_points.setInput(0, p_lsystem, 0)
+        p_copy_to_points.setDisplayFlag(True)
 
-base_shape_data = {
-    'Torus SOP': 'torus',
-    'Box SOP': 'box',
-    'Grid SOP': 'grid',
-    'Draw Curve SOP': 'drawcurve',
-    'Curve SOP': 'curve'
-}
-
-"""
-This config will help with the UI later, as I plan to give the user options of shapes they can use to
-populate trees on top of
-"""
-with open(json_path, 'w') as outFile:
-    json.dump(base_shape_data, outFile, indent=4)
+win = ForestCreator()
+win.show()
 
 class Node:
     """
@@ -84,23 +94,7 @@ class CurveNode(Node):
         # Set curve to be Bezier curve for ease of use
         new_node.parm('outputtype').set('Bezier Curve')
 
-def main():
-    obj = hou.node('/obj')
-
-    curve_node = CurveNode(parent_node=obj, node_type='curve', given_name='p_curve', num_points=4)
-    
-    # curve_obj = hou.node('/obj').createNode('geo', 'p_curve_objects')
-    # p_curve1 = curve_obj.createNode('curve', 'p_curve1')
-    
-    # p_resample = curve_obj.createNode('resample', 'p_resample')
-    # p_resample.setInput(0, p_curve1, 0)
-    
-    # p_copy_to_points = curve_obj.createNode('copytopoints::2.0', 'p_copy_to_points')
-    # p_copy_to_points.setInput(1, p_resample, 0)
-    
-    # p_lsystem = curve_obj.createNode('lsystem', 'p_lsystem')
-    # p_copy_to_points.setInput(0, p_lsystem, 0)
-    # p_copy_to_points.setDisplayFlag(True)
+    # If exists, make a new curve with name prev + 1 - string interp
 
     # Upcoming TOOOs
         # if not exist, create
