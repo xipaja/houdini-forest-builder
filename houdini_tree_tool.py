@@ -20,13 +20,14 @@ class ForestCreator(QtWidgets.QWidget):
         self.copy_to_points_node = None
         self.group_range_node = None
         self.l_system_node = None
+        self.attr_exp_node = None
 
         # Signals
         self.ui.dropdown.activated.connect(self.selectionChange)
         self.ui.btn_create.clicked.connect(self.btnClicked)
         self.ui.slider_density.valueChanged.connect(self.sliderChanged)
 
-    # -------------------------- UI methods --------------------------
+    # -------------------------- UI event methods --------------------------
     def selectionChange(self, user_selection):
         
         dropdown_options = {
@@ -56,7 +57,7 @@ class ForestCreator(QtWidgets.QWidget):
             self.setUpGeoDensityNodes()
         
         self.addTrees()        
-        
+
         self.group_range_node.parm('selecttotal1').set(10)
         
         # Layout network view in clean tree view
@@ -120,7 +121,8 @@ class ForestCreator(QtWidgets.QWidget):
         self.group_range_node = self.base_obj.createNode('grouprange', 'p_grouprange')
         self.group_range_node.setInput(0, self.resample_node, 0)
 
-        self.copy_to_points_node.setInput(1, self.group_range_node, 0)            
+        # self.copy_to_points_node.setInput(1, self.group_range_node, 0)            
+        self.setTreesUpright()
 
         group_name = self.group_range_node.parm('groupname1')
             
@@ -128,6 +130,17 @@ class ForestCreator(QtWidgets.QWidget):
         self.group_range_node.parm('grouptype1').set(0)         
         self.copy_to_points_node.parm('targetgroup').set(group_name)
 
+    def setTreesUpright(self):
+        '''
+        Rotates trees to be along ZX plane on surface normals to give appearance of standing upright
+        '''
+        self.attr_exp_node = self.base_obj.createNode('attribexpression', 'p_attr_exp')
+        self.attr_exp_node.setInput(0, self.group_range_node, 0)
+        self.copy_to_points_node.setInput(1, self.attr_exp_node, 0)
+
+        # Set attr exp to Normals and Flatten to ZX plane
+        self.attr_exp_node.parm('preset1').set(6)
+        self.attr_exp_node.parm('snippet1').set('set(self.x, 0, self.z)')
 
 
 win = ForestCreator()
