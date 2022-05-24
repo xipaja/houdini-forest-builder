@@ -11,7 +11,7 @@ class ForestCreator(QtWidgets.QWidget):
         self.setParent(hou.ui.mainQtWindow(), QtCore.Qt.Window)
 
         self.user_selected_geo = 'curve'
-        self.slider_value = 1
+        self.slider_value = 5
     
         # Nodes
         self.base_obj = None
@@ -45,35 +45,42 @@ class ForestCreator(QtWidgets.QWidget):
         return str(self.user_selected_geo)
 
     def btnClicked(self):
-
+  
         self.setUpBaseNodes()
        
        # If user selects curve, change length of resample node for editing tree density
         if self.user_selected_geo == 'curve':
             self.copy_to_points_node.setInput(1, self.resample_node, 0)
+            self.resample_node.parm('length').set(4.5)
 
         # If a 3D geo, need to add a grouprange node instead of resample for editing forest density
         elif self.user_selected_geo != 'curve':
+            # Adjust slider value to work with 3D geos
+            self.slider_value = 10
+
+            # Houdini auto set up length of resulting resample - avoids accidental user error & visual bugs 
+            self.resample_node.parm('dolength').set(0)
             self.setUpGeoDensityNodes()
         
         self.addTrees()        
-
-        self.group_range_node.parm('selecttotal1').set(10)
         
         # Layout network view in clean tree view
         self.base_obj.moveToGoodPosition()
         self.base_obj.layoutChildren()
 
+        self.base_geo.setCurrent(True)
+
     def sliderChanged(self):
         self.slider_value = self.ui.slider_density.value()
 
+        print(self.slider_value)
         # Adjust tree density on slider change
         # Set select every 1 of {slider_value} points in geo
         if self.user_selected_geo == 'curve':
-            self.resample_node.parm('length').set(self.slider_value)
+            self.resample_node.parm('length').set(5 - (self.slider_value/2))
         else:
-            self.group_range_node.parm('selecttotal1').set(self.slider_value)
-    
+            self.group_range_node.parm('selecttotal1').set(11 - self.slider_value)
+            
     # --------------------- Node operations methods ---------------------
     def setUpBaseNodes(self):
         '''
@@ -87,10 +94,7 @@ class ForestCreator(QtWidgets.QWidget):
         # Resample to equal surface segments for cleaner distribution of trees later
         self.resample_node = self.base_obj.createNode('resample', 'p_resample')
         self.resample_node.setInput(0, self.base_geo, 0)
-        
-        # Houdini auto set up length of resulting resample - avoids accidental user error & visual bugs 
-        self.resample_node.parm('dolength').set(0)
-        
+                
         # Create copy_to_points node that will copy trees to geo points
         self.copy_to_points_node = self.base_obj.createNode('copytopoints::2.0', 'p_copy_to_points')
 
@@ -125,10 +129,14 @@ class ForestCreator(QtWidgets.QWidget):
         self.setTreesUpright()
 
         group_name = self.group_range_node.parm('groupname1')
+        self.group_range_node.parm('selecttotal1').set(10)
             
         # Set up group type to be 'Points'
         self.group_range_node.parm('grouptype1').set(0)         
         self.copy_to_points_node.parm('targetgroup').set(group_name)
+
+        self.group_range_node.parm('selecttotal1').set(10)
+
 
     def setTreesUpright(self):
         '''
