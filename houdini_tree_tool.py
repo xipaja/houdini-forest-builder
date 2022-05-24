@@ -1,4 +1,3 @@
-from platform import node
 import hou
 from PySide2 import QtCore, QtUiTools, QtWidgets
 
@@ -75,7 +74,6 @@ class ForestCreator(QtWidgets.QWidget):
     def sliderChanged(self):
         self.slider_value = self.ui.slider_density.value()
 
-        print(self.slider_value)
         # Adjust tree density on slider change
         # Set select every 1 of {slider_value} points in geo
         if self.user_selected_geo == 'curve':
