@@ -12,7 +12,6 @@ class ForestCreator(QtWidgets.QWidget):
 
         self.user_selected_geo = 'curve'
         self.slider_value = 1
-        p_connector = None
 
         # SIGNALS
         self.ui.dropdown.activated.connect(self.selectionChange)
@@ -40,39 +39,46 @@ class ForestCreator(QtWidgets.QWidget):
         base_obj = hou.node('/obj').createNode('geo', f'p_{self.user_selected_geo}_object')
         p_base_geo = base_obj.createNode(self.user_selected_geo, f'p_{self.user_selected_geo}')
     
-        p_resample = base_obj.createNode('resample', 'p_resample')
-        p_resample.setInput(0, p_base_geo, 0)
+        self.p_resample = base_obj.createNode('resample', 'p_resample')
+        self.p_resample.setInput(0, p_base_geo, 0)
 
         p_copy_to_points = base_obj.createNode('copytopoints::2.0', 'p_copy_to_points')
        
-        # If a 3D geo, need to add a grouprange node for editing forest density
-        if self.user_selected_geo != 'curve':
-            self.p_connector = base_obj.createNode('grouprange', 'p_grouprange')
-            self.p_connector.setInput(0, p_resample, 0)
+       # If user selects curve, change length of resample node for changing tree density
+        if self.user_selected_geo == 'curve':
+            p_copy_to_points.setInput(1, self.p_resample, 0)
 
-            p_copy_to_points.setInput(1, self.p_connector, 0)            
+        # If a 3D geo, need to add a grouprange node for editing forest density
+        elif self.user_selected_geo != 'curve':
+            self.p_group_range = base_obj.createNode('grouprange', 'p_grouprange')
+            self.p_group_range.setInput(0, self.p_resample, 0)
+
+            p_copy_to_points.setInput(1, self.p_group_range, 0)            
 
             # Setting up for changing tree density
-            group_name = self.p_connector.parm('groupname1')
+            group_name = self.p_group_range.parm('groupname1')
             
             # Set up group type to be 'Points' for copy to points node to adjust trees by points 
-            self.p_connector.parm('grouptype1').set(0)         
+            self.p_group_range.parm('grouptype1').set(0)         
             p_copy_to_points.parm('targetgroup').set(group_name)
-
-            # print('update pls ', self.slider_value)
-            print('density ', str(self.p_connector.parm('selecttotal1').eval()))    
-        # Add this back in for only curve
-        # p_copy_to_points.setInput(1, p_resample, 0)
         
         p_lsystem = base_obj.createNode('lsystem', 'p_lsystem')
         p_copy_to_points.setInput(0, p_lsystem, 0)
         p_copy_to_points.setDisplayFlag(True)
 
+        # Layout network view in clean tree view
+        base_obj.moveToGoodPosition()
+        base_obj.layoutChildren()
+
     def sliderSlid(self):
         self.slider_value = self.ui.slider_density.value()
 
+        # Adjust tree density on slider change
         # Set select every 1 of {slider_value} points in geo
-        self.p_connector.parm('selecttotal1').set(self.slider_value)
+        if self.user_selected_geo == 'curve':
+            self.p_resample.parm('length').set(self.slider_value)
+        else:
+            self.p_group_range.parm('selecttotal1').set(self.slider_value)
 
 win = ForestCreator()
 win.show()
