@@ -52,6 +52,7 @@ class ForestCreator(QtWidgets.QWidget):
         if self.user_selected_geo == 'curve':
             self.copy_to_points_node.setInput(1, self.resample_node, 0)
             self.resample_node.parm('length').set(4.5)
+            self.base_geo.setCurrent(True)
 
         # If a 3D geo, need to add a grouprange node instead of resample for editing forest density
         elif self.user_selected_geo != 'curve':
@@ -68,7 +69,8 @@ class ForestCreator(QtWidgets.QWidget):
         self.base_obj.moveToGoodPosition()
         self.base_obj.layoutChildren()
 
-        self.base_geo.setCurrent(True)
+        # Reset slider value for new geo
+        self.ui.slider_density.setValue(1)
 
     def sliderChanged(self):
         self.slider_value = self.ui.slider_density.value()
