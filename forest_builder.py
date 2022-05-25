@@ -12,14 +12,17 @@
 # Author: Ximena Jaramillo 
 # ***********************************************************************
 
-import hou
+import os
 from PySide2 import QtCore, QtUiTools, QtWidgets
-from .tool_UI import NodeOperations
+from .node_operations import NodeOperations
 
 class ForestCreator(QtWidgets.QWidget):
     
     def __init__(self):
         super(ForestCreator,self).__init__()
+
+        # ui_path = ("/").join([os.path.dirname(__file__), "uiForestCreator.ui"])
+
         ui_file = r'C:/hou_temp/uiForestCreator.ui'
         self.ui = QtUiTools.QUiLoader().load(ui_file, parentWidget=self)
         self.setParent(hou.ui.mainQtWindow(), QtCore.Qt.Window)
