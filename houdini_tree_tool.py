@@ -1,4 +1,17 @@
-from platform import node
+# ***********************************************************************
+# Forest Builder Tool
+# Gives the user the ability to populate a geometry in Houdini with L-System "trees"
+#
+# May 24, 2022
+#
+# How to use:
+#   In Houdini, open this in Windows -> Python Source Editor 
+#   Click "Apply" and UI will pop up
+#   * Can also create a shelf tool in Houdini and place this code there
+#   
+# Author: Ximena Jaramillo 
+# ***********************************************************************
+
 import hou
 from PySide2 import QtCore, QtUiTools, QtWidgets
 
@@ -6,7 +19,7 @@ class ForestCreator(QtWidgets.QWidget):
     
     def __init__(self):
         super(ForestCreator,self).__init__()
-        ui_file = 'C:/hou_temp/uiForestCreator.ui'
+        ui_file = r'C:/hou_temp/uiForestCreator.ui'
         self.ui = QtUiTools.QUiLoader().load(ui_file, parentWidget=self)
         self.setParent(hou.ui.mainQtWindow(), QtCore.Qt.Window)
 
@@ -75,7 +88,6 @@ class ForestCreator(QtWidgets.QWidget):
     def sliderChanged(self):
         self.slider_value = self.ui.slider_density.value()
 
-        print(self.slider_value)
         # Adjust tree density on slider change
         # Set select every 1 of {slider_value} points in geo
         if self.user_selected_geo == 'curve':
