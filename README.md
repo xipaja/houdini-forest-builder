@@ -1,10 +1,9 @@
 # Forest Builder
 
 Create a forest with the primitive geometry of your choice! Draw a curve and see trees populated on it, or create a 3D geometry for a different forest. 
-
-  ![Houdini Viewport with Vine Curve](https://github.com/xipaja/python-advanced-tool/blob/main/tool_screenshots/forest_builder.PNG)
-
-
+<p align="center">
+  <img src="https://github.com/xipaja/python-advanced-tool/blob/main/tool_screenshots/curve.gif" width=700 height=350 />
+</p>
 
 ## How to use it
 
@@ -17,6 +16,8 @@ This tool is also able to be integrated into the Houdini toolshelf by right-clic
   <li> If the user selects a 3D geo, it will be populated by trees and they can play with the density slider to increase/decrease tree coverage
 </ul>
 
+
+  ![Houdini Viewport with Various Geometries](https://github.com/xipaja/python-advanced-tool/blob/main/tool_screenshots/forest_builder.PNG)
 
 
 ## How it works (behind the scenes)
