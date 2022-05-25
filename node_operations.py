@@ -1,3 +1,5 @@
+import hou 
+
 class NodeOperations():
     def __init__(self):
         # Nodes
