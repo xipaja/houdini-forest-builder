@@ -13,8 +13,9 @@
 # ***********************************************************************
 
 import os
+import hou
 from PySide2 import QtCore, QtUiTools, QtWidgets
-from .node_operations import NodeOperations
+from node_operations import NodeOperations
 
 class ForestCreator(QtWidgets.QWidget):
     
@@ -23,7 +24,9 @@ class ForestCreator(QtWidgets.QWidget):
 
         # ui_path = ("/").join([os.path.dirname(__file__), "uiForestCreator.ui"])
 
-        ui_file = r'C:/hou_temp/uiForestCreator.ui'
+        # ui_file = r'C:/hou_temp/uiForestCreator.ui'
+        # ui_file = r'C:/Users/Ximena/Desktop/houdini-forest-builder'
+        ui_file = 'C:/Users/Ximena/Desktop/houdini-forest-builder/uiForestBuilder.ui'
         self.ui = QtUiTools.QUiLoader().load(ui_file, parentWidget=self)
         self.setParent(hou.ui.mainQtWindow(), QtCore.Qt.Window)
 
