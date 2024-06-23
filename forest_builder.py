@@ -2,8 +2,6 @@
 # Forest Builder Tool
 # Gives the user the ability to populate a geometry in Houdini with L-System "trees"
 #
-# May 24, 2022
-#
 # How to use:
 #   In Houdini, open this in Windows -> Python Source Editor 
 #   Click "Apply" and UI will pop up
@@ -12,9 +10,9 @@
 # Author: Ximena Jaramillo 
 # ***********************************************************************
 
-import os
 import hou
-from PySide2 import QtCore, QtUiTools, QtWidgets
+from pathlib import Path
+from PySide2 import QtCore, QtUiTools, QtWidgets 
 from node_operations import NodeOperations
 
 class ForestCreator(QtWidgets.QWidget):
@@ -22,11 +20,10 @@ class ForestCreator(QtWidgets.QWidget):
     def __init__(self):
         super(ForestCreator,self).__init__()
 
-        # ui_path = ("/").join([os.path.dirname(__file__), "uiForestCreator.ui"])
+        # Get UI file path
+        ui_absolute_path = Path(__file__).with_name('uiForestBuilder.ui').absolute()
+        ui_file = str(ui_absolute_path.as_posix())
 
-        # ui_file = r'C:/hou_temp/uiForestCreator.ui'
-        # ui_file = r'C:/Users/Ximena/Desktop/houdini-forest-builder'
-        ui_file = 'C:/Users/Ximena/Desktop/houdini-forest-builder/uiForestBuilder.ui'
         self.ui = QtUiTools.QUiLoader().load(ui_file, parentWidget=self)
         self.setParent(hou.ui.mainQtWindow(), QtCore.Qt.Window)
 
