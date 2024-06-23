@@ -14,8 +14,8 @@ Create a forest with the primitive geometry of your choice! Draw a curve and see
       <li>Open a terminal (for example, Command Prompt on Windows)</li>
       <li>Navigate to where you cloned/downloaded this project. For example, mine is on my Desktop, so I would cd to Desktop</li>
       <li>Once you're in the houdini-forest-builder folder, type "python generate_houdini_integration.py"</li>
-      <li>Once you follow the prompt from the script, it will give you a snippet of code</li>
-      <li>See next steps :) </li>
+      <li>The script will give you a snippet of code that you'll paste into Houdini soon</li>
+      <li>See next steps</li>
     </ul>
   <li>Create a new tool in the shelf by right clicking on the shelf and selecting "New Tool"</li>
   <li>Navigate to the "Scripts" tab</li>
