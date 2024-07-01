@@ -13,7 +13,13 @@ class NodeOperations():
 
         self.user_selected_geo = 'curve'
         self.slider_value = 5
+        
+    
+    def set_slider_value(self, value):
+        self.slider_value = value
 
+    def get_slider_value(self):
+        return self.slider_value
 
  # --------------------- Node operations methods ---------------------
     def set_up_base_nodes(self):
@@ -35,7 +41,7 @@ class NodeOperations():
         # Create copy_to_points node that will copy trees to geo points
         self.copy_to_points_node = self.base_obj.createNode('copytopoints::2.0', 'p_copy_to_points')
 
-    def config_selected(self):
+    def configure_selected(self):
         '''
         Logic for handling different node setup depending on user selected geo
         

@@ -55,7 +55,7 @@ class ForestCreator(QtWidgets.QWidget):
     def createBtnClicked(self):
   
         self.nodeOps.set_up_base_nodes()
-        self.nodeOps.config_selected()
+        self.nodeOps.configure_selected()
       
         self.nodeOps.add_trees()        
         
@@ -68,7 +68,7 @@ class ForestCreator(QtWidgets.QWidget):
 
 
     def sliderChanged(self):
-        self.nodeOps.slider_value = self.ui.slider_density.value()
+        self.nodeOps.set_slider_value(self.ui.slider_density.value())
 
         self.nodeOps.adjust_tree_density()
     
