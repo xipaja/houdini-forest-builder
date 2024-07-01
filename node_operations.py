@@ -97,7 +97,7 @@ class NodeOperations():
         '''
         Adjust tree density on slider change
         '''
-         
+        
         # Set select every 1 of {slider_value} points in geo
         if self.user_selected_geo == 'curve':
             self.resample_node.parm('length').set(5 - (self.slider_value/2))
@@ -115,3 +115,16 @@ class NodeOperations():
         # Set attr exp to Normals and Flatten to ZX plane
         self.attr_exp_node.parm('preset1').set(6)
         self.attr_exp_node.parm('snippet1').set('set(self.x, 0, self.z)')
+    
+    def export_to_usd(self, path):
+        '''
+        Export geo to USD file
+        '''
+        print(f"============= Exporting to USD to {path}! ============= ")
+        # Connect usdexport node to copy to points node
+        self.usd_export_node = self.base_obj.createNode('usdexport')
+        self.usd_export_node.setInput(0, self.copy_to_points_node)
+        
+        # Layout network view in clean tree view
+        self.base_obj.moveToGoodPosition()
+        self.base_obj.layoutChildren()

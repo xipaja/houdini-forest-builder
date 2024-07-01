@@ -31,8 +31,9 @@ class ForestCreator(QtWidgets.QWidget):
 
         # Signals
         self.ui.dropdown.activated.connect(self.selectionChange)
-        self.ui.btn_create.clicked.connect(self.btnClicked)
+        self.ui.btn_create.clicked.connect(self.createBtnClicked)
         self.ui.slider_density.valueChanged.connect(self.sliderChanged)
+        self.ui.export_btn.clicked.connect(self.exportBtnClicked)
 
     # -------------------------- UI event methods --------------------------
     def selectionChange(self, user_selection):
@@ -51,7 +52,7 @@ class ForestCreator(QtWidgets.QWidget):
         
         return str(self.nodeOps.user_selected_geo)
 
-    def btnClicked(self):
+    def createBtnClicked(self):
   
         self.nodeOps.set_up_base_nodes()
         self.nodeOps.config_selected()
@@ -70,6 +71,13 @@ class ForestCreator(QtWidgets.QWidget):
         self.nodeOps.slider_value = self.ui.slider_density.value()
 
         self.nodeOps.adjust_tree_density()
+    
+    def exportBtnClicked(self):
+        exportPath = self.ui.path_edit.text()
+        self.nodeOps.export_to_usd(exportPath)
+
+        # once exported, print ("Export complete!" - try to do it in the UI itself)
+        # label that once clicked appears in Qt
 
 win = ForestCreator()
 win.show()
