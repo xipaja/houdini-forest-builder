@@ -126,7 +126,12 @@ class NodeOperations():
         '''
         Export geo to USD file
         '''
-        print(f"============= Exporting to USD to {path}! ============= ")
+        print(f"========== Exporting to {path}! ========== ")
+        print(self.base_obj) # TODO: Add protections against this - disallow exporting before obj creation
+
+        # posix_path = str(path.as_posix())
+        # print('saving to posix path: ', posix_path)
+        
         # Connect usdexport node to copy to points node
         self.usd_export_node = self.base_obj.createNode('usdexport')
         self.usd_export_node.setInput(0, self.copy_to_points_node)
@@ -134,3 +139,6 @@ class NodeOperations():
         # Layout network view in clean tree view
         self.base_obj.moveToGoodPosition()
         self.base_obj.layoutChildren()
+        
+        self.usd_export_node.parm('lopoutput').set(path)
+        self.usd_export_node.parm('execute').pressButton()
