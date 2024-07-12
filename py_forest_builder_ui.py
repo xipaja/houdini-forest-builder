@@ -9,36 +9,57 @@ class ForestBuilderUI(QDialog):
         self.setGeometry(100, 100, 400, 500)
         self.setWindowTitle('Forest Builder')
 
+        self.mainLayout = QVBoxLayout(self)
+
         self.setUpCreationLayout()
         self.setUpEditLayout()
+        self.setUpExportLayout()
 
     def setUpCreationLayout(self):
-        creationLayout = QVBoxLayout(self)
+        creationLayout = QVBoxLayout()
+        self.mainLayout.addLayout(creationLayout)
 
-        welcomeLabel = QLabel('Welcome to Forest Builder!', self)
-        welcomeLabel.setFont(QFont('Arial', 18))
+        welcomeLabel = QLabel('Welcome to Forest Builder!')
+        welcomeLabel.setFont(QFont('Arial', 16))
         welcomeLabel.setAlignment(Qt.AlignCenter)
 
-        chooseLabel = QLabel('Choose a geometry to populate with trees', self)
-        chooseLabel.setFont(QFont('Arial', 12))
+        chooseLabel = QLabel('Choose a geometry to populate with trees')
         chooseLabel.setAlignment(Qt.AlignCenter)
 
-        dropdown = QComboBox(self)
+        dropdown = QComboBox()
+        dropdownOptions = ['Curve', 'Box', 'Sphere', 'Tube', 'Torus', 'Grid']
+        for option in dropdownOptions:
+            dropdown.addItem(option)
         
-        creationComponents = [welcomeLabel, chooseLabel, dropdown]
+        createButton = QPushButton('Create Nodes')
+
+        creationComponents = [welcomeLabel, chooseLabel, dropdown, createButton]
         self.addComponentsToLayout(creationLayout, creationComponents)
 
     def setUpEditLayout(self):
-        editLayout = QVBoxLayout(self)
+        editLayout = QVBoxLayout()
+        self.mainLayout.addLayout(editLayout)
 
-        label = QLabel('Adjust density of trees', self)
+        label = QLabel('Adjust density of trees')
+        slider = QSlider(Qt.Horizontal)
+
+        editComponents = [label, slider]
+        self.addComponentsToLayout(editLayout, editComponents)
 
     def setUpExportLayout(self):
-        pass
+        exportLayout = QVBoxLayout()
+        self.mainLayout.addLayout(exportLayout)
+
+        titleLabel = QLabel('Export to USD')
+        pathLabel = QLabel('Path to export')
+
+        exportComponents = [titleLabel, pathLabel]
+        self.addComponentsToLayout(exportLayout, exportComponents)
+
 
     def addComponentsToLayout(self, layout, uiComponents):
         for component in uiComponents:
-            layout.addWidget(component)
+            layout.addWidget(component, stretch=1)
         
 
 dialog = ForestBuilderUI()
