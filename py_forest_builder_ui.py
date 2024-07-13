@@ -20,10 +20,11 @@ class ForestBuilderUI(QDialog):
         self.mainLayout.addLayout(creationLayout)
 
         welcomeLabel = QLabel('Welcome to Forest Builder!')
-        welcomeLabel.setFont(QFont('Arial', 16))
+        welcomeLabel.setFont(QFont('Roboto', 16))
         welcomeLabel.setAlignment(Qt.AlignCenter)
 
         chooseLabel = QLabel('Choose a geometry to populate with trees')
+        chooseLabel.setFont(QFont('Roboto', 11))
         chooseLabel.setAlignment(Qt.AlignCenter)
 
         dropdown = QComboBox()
@@ -34,30 +35,48 @@ class ForestBuilderUI(QDialog):
         createButton = QPushButton('Create Nodes')
 
         creationComponents = [welcomeLabel, chooseLabel, dropdown, createButton]
-        self.addComponentsToLayout(creationLayout, creationComponents)
+        self.addComponentsToLayout(creationComponents, creationLayout)
 
     def setUpEditLayout(self):
         editLayout = QVBoxLayout()
         self.mainLayout.addLayout(editLayout)
 
-        label = QLabel('Adjust density of trees')
+        densityLabel = QLabel('Adjust density of trees')
+        densityLabel.setFont(QFont('Roboto', 11))
+        densityLabel.setAlignment(Qt.AlignCenter)
         slider = QSlider(Qt.Horizontal)
 
-        editComponents = [label, slider]
-        self.addComponentsToLayout(editLayout, editComponents)
+        editComponents = [densityLabel, slider]
+        self.addComponentsToLayout(editComponents, editLayout)
 
     def setUpExportLayout(self):
         exportLayout = QVBoxLayout()
         self.mainLayout.addLayout(exportLayout)
-
+ 
         titleLabel = QLabel('Export to USD')
+        titleLabel.setFont(QFont('Roboto', 11))
+        titleLabel.setAlignment(Qt.AlignCenter)
+        nameLabel = QLabel('Name your USD file: ')
+
+        # Add horizontal layout for file name line edit 
+        fileNameHLayout = QHBoxLayout()
+        fileNameLineEdit = QLineEdit()
+        fileNameFileExtLabel = QLabel('.usd')
+
         pathLabel = QLabel('Path to export')
+        exportComponents = [titleLabel, nameLabel]
+        self.addComponentsToLayout([fileNameLineEdit, fileNameFileExtLabel], fileNameHLayout)
+        self.addComponentsToLayout(exportComponents, exportLayout)
+        exportLayout.addLayout(fileNameHLayout)
+        exportLayout.addWidget(pathLabel)
 
-        exportComponents = [titleLabel, pathLabel]
-        self.addComponentsToLayout(exportLayout, exportComponents)
-
-
-    def addComponentsToLayout(self, layout, uiComponents):
+        exportPathLayout = QHBoxLayout()
+        pathLineEdit = QLineEdit()
+        exportButton = QPushButton('Export')
+        self.addComponentsToLayout([pathLineEdit, exportButton], exportPathLayout)
+        exportLayout.addLayout(exportPathLayout)
+    
+    def addComponentsToLayout(self, uiComponents, layout):
         for component in uiComponents:
             layout.addWidget(component, stretch=1)
         
