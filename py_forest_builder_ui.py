@@ -1,7 +1,6 @@
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from forest_builder import ForestCreator
 from node_operations import NodeOperations
 
 class ForestBuilderUI(QDialog):
@@ -55,7 +54,8 @@ class ForestBuilderUI(QDialog):
         densityLabel.setFont(QFont('Roboto', 10))
         densityLabel.setAlignment(Qt.AlignCenter)
         slider = QSlider(Qt.Horizontal)
-
+        slider.valueChanged.connect(self.clickFunc.sliderChanged)
+        
         editComponents = [densityLabel, slider]
         self.addComponentsToLayout(editComponents, editLayout)
 
@@ -103,7 +103,6 @@ class ClickFunctionality:
             4 : 'Torus',
             5 : 'Grid'
         }
-        print('selection changed to', dropdown_options[user_selection])
 
         # Convert user selection to lowercase to match Houdini params
         self.nodeOps.user_selected_geo = dropdown_options[user_selection].lower() 
@@ -122,6 +121,10 @@ class ClickFunctionality:
 
         # Reset slider value for new geo
         # self.ui.slider_density.setValue(1)
+
+    def sliderChanged(self, sliderValue):
+        self.nodeOps.set_slider_value(sliderValue)
+        self.nodeOps.adjust_tree_density()
 
 dialog = ForestBuilderUI()
 dialog.show()
