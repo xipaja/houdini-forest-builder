@@ -1,3 +1,11 @@
+# ***********************************************************************
+# Forest Builder Tool
+# Gives the user the ability to populate a geometry in Houdini with L-System "trees" and export it
+#
+#   
+# Author: Ximena Jaramillo 
+# ***********************************************************************
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *

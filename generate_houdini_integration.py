@@ -16,10 +16,11 @@ houdini_integration_script = f'''
 from importlib import reload
 import sys
 sys.path.append("{user_path.strip()}")
-import forest_builder
-reload(forest_builder)
+import py_forest_builder_ui as ui
+reload(ui)
 
-forest = forest_builder.ForestCreator()
+window = ui.ForestBuilderUI()
+window.show()
 '''
 
 print(houdini_integration_script)
