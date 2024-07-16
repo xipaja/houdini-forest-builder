@@ -27,7 +27,8 @@ class ForestBuilderUI(QDialog):
         welcomeLabel = QLabel('Welcome to Forest Builder!')
         welcomeLabel.setFont(QFont('Roboto', 16))
         welcomeLabel.setAlignment(Qt.AlignCenter)
-        # creationLayout.addItem(spacer)
+        creationLayout.addWidget(welcomeLabel)
+        creationLayout.addItem(spacer)
 
         chooseLabel = QLabel('Choose a geometry to populate with trees')
         chooseLabel.setFont(QFont('Roboto', 10))
@@ -43,7 +44,7 @@ class ForestBuilderUI(QDialog):
         createButton = QPushButton('Create Nodes')
         createButton.clicked.connect(self.clickFunc.createBtnClicked)
 
-        creationComponents = [welcomeLabel, chooseLabel, dropdown, createButton]
+        creationComponents = [chooseLabel, dropdown, createButton]
         self.addComponentsToLayout(creationComponents, creationLayout)
 
     def setUpEditLayout(self):
@@ -54,6 +55,8 @@ class ForestBuilderUI(QDialog):
         densityLabel.setFont(QFont('Roboto', 10))
         densityLabel.setAlignment(Qt.AlignCenter)
         slider = QSlider(Qt.Horizontal)
+        slider.setMinimum(1)
+        slider.setMaximum(10)
         slider.valueChanged.connect(self.clickFunc.sliderChanged)
         
         editComponents = [densityLabel, slider]
@@ -72,23 +75,28 @@ class ForestBuilderUI(QDialog):
         fileNameHLayout = QHBoxLayout()
         fileNameLineEdit = QLineEdit()
         fileNameFileExtLabel = QLabel('.usd')
+        fileNameSetButton = QPushButton('Set file name')
+        fileNameLineEdit.textChanged.connect(self.clickFunc.fileNameTextChanged)
+        fileNameSetButton.clicked.connect(self.clickFunc.fileNameSet)
 
         pathLabel = QLabel('Path to export')
         exportComponents = [titleLabel, nameLabel]
-        self.addComponentsToLayout([fileNameLineEdit, fileNameFileExtLabel], fileNameHLayout)
+        self.addComponentsToLayout([fileNameLineEdit, fileNameFileExtLabel, fileNameSetButton], fileNameHLayout)
         self.addComponentsToLayout(exportComponents, exportLayout)
         exportLayout.addLayout(fileNameHLayout)
         exportLayout.addWidget(pathLabel)
 
         exportPathLayout = QHBoxLayout()
         pathLineEdit = QLineEdit()
+        pathLineEdit.textChanged.connect(self.clickFunc.exportPathTextChanged)
         exportButton = QPushButton('Export')
+        exportButton.clicked.connect(self.clickFunc.exportPathSet)
         self.addComponentsToLayout([pathLineEdit, exportButton], exportPathLayout)
         exportLayout.addLayout(exportPathLayout)
     
     def addComponentsToLayout(self, uiComponents, layout):
         for component in uiComponents:
-            layout.addWidget(component, stretch=1)
+            layout.addWidget(component)
         
 class ClickFunctionality:
     def __init__(self):
@@ -120,11 +128,27 @@ class ClickFunctionality:
         self.nodeOps.base_obj.layoutChildren()
 
         # Reset slider value for new geo
-        # self.ui.slider_density.setValue(1)
+        # self.ui.slider_density.setValue(1) - still need to do this
+        self.nodeOps.set_slider_value(1)
 
     def sliderChanged(self, sliderValue):
         self.nodeOps.set_slider_value(sliderValue)
         self.nodeOps.adjust_tree_density()
+
+    def fileNameTextChanged(self, text):
+        self.filename = text
+
+    def fileNameSet(self):
+        print('filename set to ', self.filename)
+    
+    def exportPathTextChanged(self, pathText):
+        self.exportPath = pathText;
+
+    def exportPathSet(self):
+        path = self.exportPath + '/' + self.filename
+        print('path set to ', path)
+
+        
 
 dialog = ForestBuilderUI()
 dialog.show()
