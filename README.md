@@ -2,7 +2,7 @@
 
 Create a forest with the primitive geometry of your choice! Draw a curve and see trees populated on it, or create a 3D geometry for a different forest. 
 <p align="center">
-  <img src="https://github.com/xipaja/python-advanced-tool/blob/main/tool_screenshots/curve.gif" width=700 height=350 />
+  <img src="https://github.com/xipaja/python-advanced-tool/blob/main/tool_screenshots/forest_demo.gif" width=700 height=350 />
 </p>
 
 ## How to use it
@@ -33,7 +33,7 @@ This tool is also able to be integrated into the Houdini toolshelf by right-clic
 </ul>
 
 
-  ![Houdini Viewport with Various Geometries](https://github.com/xipaja/python-advanced-tool/blob/main/tool_screenshots/forest_builder.PNG)
+  ![Houdini Viewport with Various Geometries](https://github.com/xipaja/python-advanced-tool/blob/main/tool_screenshots/forest_builder_updated.png)
 
 
 ## How it works (behind the scenes)
