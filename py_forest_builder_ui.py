@@ -146,17 +146,15 @@ class ClickFunctionality:
         self.exportPath = pathText
 
     def exportPathSet(self):
-        if not self.exportPath:
+        finalPath = ''
+        if not self.exportPath and self.nodeOps.base_obj:
             print('Please enter an export path')
         if not self.fileName:
             self.fileName = 'forest'
         elif self.exportPath and self.fileName:
-            path = self.exportPath + '/' + self.fileName + '.usd'
-            print('path set to ', path)
-    
-    def updateLabel(self):
-        print('label updated' )
-        return f'File exported to {self.exportPath}'
+            finalPath = self.exportPath + '/' + self.fileName + '.usd'
+        
+        self.nodeOps.export_to_usd(finalPath)
         
         
 dialog = ForestBuilderUI()

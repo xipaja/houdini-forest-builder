@@ -1,4 +1,4 @@
-import hou 
+import hou
 
 class NodeOperations():
     def __init__(self):
@@ -126,11 +126,10 @@ class NodeOperations():
         '''
         Export geo to USD file
         '''
-        print(f"========== Exporting to {path}! ========== ")
-        print(self.base_obj) # TODO: Add protections against this - disallow exporting before obj creation
 
-        # posix_path = str(path.as_posix())
-        # print('saving to posix path: ', posix_path)
+        if self.base_obj is None:
+            print('Please create nodes first!')
+            return
         
         # Connect usdexport node to copy to points node
         self.usd_export_node = self.base_obj.createNode('usdexport')
@@ -142,3 +141,6 @@ class NodeOperations():
         
         self.usd_export_node.parm('lopoutput').set(path)
         self.usd_export_node.parm('execute').pressButton()
+
+        if not path == '':
+            print(f'Exported to {path}!')
