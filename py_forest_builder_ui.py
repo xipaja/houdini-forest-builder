@@ -15,9 +15,12 @@ class ForestBuilderUI(QDialog):
     def __init__(self):
         super(ForestBuilderUI, self).__init__()
 
+        self.nodeOps = NodeOperations()
+        
         self.setGeometry(100, 100, 400, 500)
         self.setWindowTitle('Forest Builder')
-        self.clickFunc = ClickFunctionality()
+        self.exportPath = ''
+        self.fileName = ''
 
         self.mainLayout = QVBoxLayout(self)
         spacer = QSpacerItem(40, 50)
@@ -47,10 +50,10 @@ class ForestBuilderUI(QDialog):
         dropdownOptions = ['Curve', 'Box', 'Sphere', 'Tube', 'Torus', 'Grid']
         for option in dropdownOptions:
             dropdown.addItem(option)
-        dropdown.activated.connect(self.clickFunc.selectionChange)
+        dropdown.activated.connect(self.selectionChange)
         
         createButton = QPushButton('Create Nodes')
-        createButton.clicked.connect(self.clickFunc.createBtnClicked)
+        createButton.clicked.connect(self.createBtnClicked)
 
         self.addComponentsToLayout([chooseLabel, dropdown, createButton], creationLayout)
 
@@ -61,12 +64,12 @@ class ForestBuilderUI(QDialog):
         densityLabel = QLabel('Adjust density of trees')
         densityLabel.setFont(QFont('Roboto', 10))
         densityLabel.setAlignment(Qt.AlignCenter)
-        slider = QSlider(Qt.Horizontal)
-        slider.setMinimum(1)
-        slider.setMaximum(10)
-        slider.valueChanged.connect(self.clickFunc.sliderChanged)
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setMinimum(1)
+        self.slider.setMaximum(10)
+        self.slider.valueChanged.connect(self.sliderChanged)
         
-        self.addComponentsToLayout([densityLabel, slider], editLayout)
+        self.addComponentsToLayout([densityLabel, self.slider], editLayout)
 
     def setUpExportLayout(self):
         exportLayout = QVBoxLayout()
@@ -82,7 +85,7 @@ class ForestBuilderUI(QDialog):
         fileNameLineEdit = QLineEdit()
         fileNameFileExtLabel = QLabel('.usd')
         fileNameSetButton = QPushButton('Set file name')
-        fileNameLineEdit.textChanged.connect(self.clickFunc.fileNameTextChanged)
+        fileNameLineEdit.textChanged.connect(self.fileNameTextChanged)
 
         pathLabel = QLabel('Path to export')
         self.addComponentsToLayout([fileNameLineEdit, fileNameFileExtLabel, fileNameSetButton], fileNameHLayout)
@@ -92,28 +95,19 @@ class ForestBuilderUI(QDialog):
 
         exportPathLayout = QHBoxLayout()
         pathLineEdit = QLineEdit()
-        pathLineEdit.textChanged.connect(self.clickFunc.exportPathTextChanged)
+        pathLineEdit.textChanged.connect(self.exportPathTextChanged)
         exportButton = QPushButton('Export')
-        exportButton.clicked.connect(self.clickFunc.exportPathSet)
+        exportButton.clicked.connect(self.exportPathSet)
         self.addComponentsToLayout([pathLineEdit, exportButton], exportPathLayout)
         exportLayout.addLayout(exportPathLayout)
-        
-    def getlabel(self):
-        return self.exportSuccessLabel
+
     def addComponentsToLayout(self, uiComponents, layout):
         for component in uiComponents:
             layout.addWidget(component)
-        
-class ClickFunctionality:
-    def __init__(self):
-        self.nodeOps = NodeOperations()
-        self.exportPath = ''
-        self.fileName = ''
-        self.isSuccessLabelVisible = False
     
-    def getPath(self):
-        return self.exportPath
 
+    ''' -------------- Signals functionality -------------- '''
+    
     def selectionChange(self, user_selection):
         dropdown_options = {
             0 : 'Curve',
@@ -142,6 +136,7 @@ class ClickFunctionality:
         # Reset slider value for new geo
         # self.ui.slider_density.setValue(1) - still need to do this
         self.nodeOps.set_slider_value(1)
+        self.slider.setValue(1)
 
     def sliderChanged(self, sliderValue):
         self.nodeOps.set_slider_value(sliderValue)
