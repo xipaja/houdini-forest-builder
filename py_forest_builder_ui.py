@@ -44,8 +44,7 @@ class ForestBuilderUI(QDialog):
         createButton = QPushButton('Create Nodes')
         createButton.clicked.connect(self.clickFunc.createBtnClicked)
 
-        creationComponents = [chooseLabel, dropdown, createButton]
-        self.addComponentsToLayout(creationComponents, creationLayout)
+        self.addComponentsToLayout([chooseLabel, dropdown, createButton], creationLayout)
 
     def setUpEditLayout(self):
         editLayout = QVBoxLayout()
@@ -59,8 +58,7 @@ class ForestBuilderUI(QDialog):
         slider.setMaximum(10)
         slider.valueChanged.connect(self.clickFunc.sliderChanged)
         
-        editComponents = [densityLabel, slider]
-        self.addComponentsToLayout(editComponents, editLayout)
+        self.addComponentsToLayout([densityLabel, slider], editLayout)
 
     def setUpExportLayout(self):
         exportLayout = QVBoxLayout()
@@ -77,12 +75,10 @@ class ForestBuilderUI(QDialog):
         fileNameFileExtLabel = QLabel('.usd')
         fileNameSetButton = QPushButton('Set file name')
         fileNameLineEdit.textChanged.connect(self.clickFunc.fileNameTextChanged)
-        fileNameSetButton.clicked.connect(self.clickFunc.fileNameSet)
 
         pathLabel = QLabel('Path to export')
-        exportComponents = [titleLabel, nameLabel]
         self.addComponentsToLayout([fileNameLineEdit, fileNameFileExtLabel, fileNameSetButton], fileNameHLayout)
-        self.addComponentsToLayout(exportComponents, exportLayout)
+        self.addComponentsToLayout([titleLabel, nameLabel], exportLayout)
         exportLayout.addLayout(fileNameHLayout)
         exportLayout.addWidget(pathLabel)
 
@@ -93,7 +89,9 @@ class ForestBuilderUI(QDialog):
         exportButton.clicked.connect(self.clickFunc.exportPathSet)
         self.addComponentsToLayout([pathLineEdit, exportButton], exportPathLayout)
         exportLayout.addLayout(exportPathLayout)
-    
+        
+    def getlabel(self):
+        return self.exportSuccessLabel
     def addComponentsToLayout(self, uiComponents, layout):
         for component in uiComponents:
             layout.addWidget(component)
@@ -101,6 +99,12 @@ class ForestBuilderUI(QDialog):
 class ClickFunctionality:
     def __init__(self):
         self.nodeOps = NodeOperations()
+        self.exportPath = ''
+        self.fileName = ''
+        self.isSuccessLabelVisible = False
+    
+    def getPath(self):
+        return self.exportPath
 
     def selectionChange(self, user_selection):
         dropdown_options = {
@@ -136,20 +140,25 @@ class ClickFunctionality:
         self.nodeOps.adjust_tree_density()
 
     def fileNameTextChanged(self, text):
-        self.filename = text
+        self.fileName = text
 
-    def fileNameSet(self):
-        print('filename set to ', self.filename)
-    
     def exportPathTextChanged(self, pathText):
-        self.exportPath = pathText;
+        self.exportPath = pathText
 
     def exportPathSet(self):
-        path = self.exportPath + '/' + self.filename
-        print('path set to ', path)
-
+        if not self.exportPath:
+            print('Please enter an export path')
+        if not self.fileName:
+            self.fileName = 'forest'
+        elif self.exportPath and self.fileName:
+            path = self.exportPath + '/' + self.fileName + '.usd'
+            print('path set to ', path)
+    
+    def updateLabel(self):
+        print('label updated' )
+        return f'File exported to {self.exportPath}'
         
-
+        
 dialog = ForestBuilderUI()
 dialog.show()
 
